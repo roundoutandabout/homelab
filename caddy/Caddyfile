@@ -1,0 +1,24 @@
+nextcloud-snap.{$MY_DOMAIN} {
+	reverse_proxy {$MY_HOST_IP}:2624
+
+	tls {
+		dns cloudflare {$CLOUDFLARE_API_TOKEN}
+	}
+}
+
+{$MY_DOMAIN} {
+	reverse_proxy {$MY_HOST_IP}:8081
+
+	tls {
+		dns cloudflare {$CLOUDFLARE_API_TOKEN}
+	}
+}
+
+nextcloud.{$MY_DOMAIN} {
+	reverse_proxy {$MY_HOST_IP}:11000
+
+	tls {
+		dns cloudflare {$CLOUDFLARE_API_TOKEN}
+		resolvers 100.64.0.23
+	}
+}

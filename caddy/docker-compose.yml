@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  caddy:
+    build: .
+    container_name: caddy
+    hostname: caddy
+    restart: unless-stopped
+    network_mode: "host"
+    env_file:
+      - container-vars.env
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./data:/data
+      - ./config:/config
+      - /var/run/docker.sock:/var/run/docker.sock
