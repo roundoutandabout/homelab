@@ -9,8 +9,13 @@ services:
     restart: unless-stopped
     volumes:
       - ./www/assets:/www/assets
-    ports:
-      - 8081:8080
+    networks:
+      - caddy_caddynet
     user: 1000:1000 # default
     environment:
       - INIT_ASSETS=1 # default
+      - PORT=8080
+
+networks:
+  caddy_caddynet:
+    external: true

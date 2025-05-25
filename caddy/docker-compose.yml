@@ -6,7 +6,12 @@ services:
     container_name: caddy
     hostname: caddy
     restart: unless-stopped
-    network_mode: "host"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    networks:
+      - caddynet
     env_file:
       - container-vars.env
     volumes:
@@ -14,3 +19,8 @@ services:
       - ./data:/data
       - ./config:/config
       - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  caddynet:
+    attachable: true
+    driver: bridge
