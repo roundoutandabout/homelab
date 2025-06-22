@@ -1,10 +1,12 @@
-ARG VERSION=2
+ARG VERSION="2.10"
 
 FROM caddy:${VERSION}-builder AS builder
 
-# We need this plugin to obtain SSL certificates from Cloudflare
+# We need these plugins to obtain SSL certificates from various providers
 RUN xcaddy build \
-	--with github.com/caddy-dns/cloudflare
+	--with github.com/caddy-dns/cloudflare \
+	--with github.com/caddy-dns/porkbun \
+	--with github.com/caddy-dns/duckdns
 
 FROM caddy:${VERSION}
 

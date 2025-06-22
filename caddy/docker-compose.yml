@@ -15,7 +15,7 @@ services:
     env_file:
       - container-vars.env
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./caddy:/etc/caddy
       - ./data:/data
       - ./config:/config
       - /var/run/docker.sock:/var/run/docker.sock

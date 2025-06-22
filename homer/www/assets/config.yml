@@ -84,7 +84,7 @@ services:
       - name: "Nextcloud AIO"
         logo: "assets/tools/nextcloud-hub-500x500.png"
         subtitle: "A safe home for all your data"
-        url: "https://nextcloud.wdycld.icu/"
+        url: "https://nextcloud.wdycld.top/"
 #      - name: "Awesome app"
 #        logo: "assets/tools/sample.png"
 #        subtitle: "Bookmark example"

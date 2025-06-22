@@ -1,0 +1,23 @@
+{$MY_DOMAIN} {
+	reverse_proxy homer:8080
+
+	tls {
+		dns porkbun {
+			api_key {$PORKBUN_API_KEY}
+			api_secret_key {$PORKBUN_API_SECRET_KEY}
+		}
+		resolvers {$DNS_RESOLVER}
+	}
+}
+
+nextcloud.{$MY_DOMAIN} {
+	reverse_proxy nextcloud-aio-apache:11000
+
+	tls {
+		dns porkbun {
+			api_key {$PORKBUN_API_KEY}
+			api_secret_key {$PORKBUN_API_SECRET_KEY}
+		}
+		resolvers {$DNS_RESOLVER}
+	}
+}
