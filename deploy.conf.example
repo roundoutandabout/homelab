@@ -1,0 +1,10 @@
+# Deployment configuration for Homelab
+# Edit these values for your server setup
+
+SERVER_USER="user"
+SERVER_HOST="192.168.0.1"
+SERVER_PORT="22"
+SSH_KEY="~/.ssh/id_rsa"
+
+# Optional: Add more variables if needed (e.g., for mappings or service restarts)
+# You can even define the MAP array here if you want
