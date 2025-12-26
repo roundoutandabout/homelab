@@ -1,0 +1,23 @@
+btrfs:  
+
+source_directories:  
+    - /         # root subvolume
+    - /home     # home subvolume
+patterns:
+    - '- /home/*/.cache'
+    - '- /var/log'
+    - '- /var/cache'
+    - '- /tmp'
+
+repositories:  
+    - path: /mnt/backup/{hostname}-backup
+
+encryption_passphrase: "{credential file /etc/borgmatic/credentials.txt}" 
+
+archive_name_format: '{now:%Y%m%d_%H%M%S}-{hostname}'
+
+keep_within: 7d  
+keep_daily: 1  
+keep_weekly: 4  
+keep_monthly: 6  
+keep_yearly: 1
