@@ -8,9 +8,39 @@ A collection of Docker‑compose files, service definitions, and other configura
 	```bash
 	./deploy.sh
 	```
-	The script reads variables from `deploy.conf`. Create this file (or copy `deploy.conf.example`) and fill in the values that match your server setup.
+	The script reads variables from `deploy.conf`. Create this file (or copy `deploy.conf.template`) and fill in the values that match your server setup.
 
-2. **Enable password‑less `rsync`**  
+2. **Automatic directory handling & safety**
+
+ - `deploy.sh` will automatically create remote directories when the target is under `/home/<user>/...`. Those directories are created as the remote user (no `sudo`), ownership is set to the deploy user when possible, and permissions are set to `0700`.
+ - For safety, if a target is outside `/home` (for example `/etc` or `/opt`), `deploy.sh` will abort with an error and ask you to create the directory manually on the server (use `sudo mkdir -p ...` and set ownership/permissions as appropriate). This limits commands that run without an interactive sudo password.
+ - The script also warns and skips any local `MAP` entries whose source path does not exist.
+
+### Testing and manual steps
+
+Run `deploy.sh` with tracing to observe what it will do:
+
+```bash
+bash -x ./deploy.sh
+```
+
+To manually create and verify a home directory on the remote host (no sudo required):
+
+```bash
+ssh -A -i "$SSH_KEY" -p "$SERVER_PORT" "$SERVER_USER@$SERVER_HOST" \
+  "mkdir -p '/home/$SERVER_USER/docker/borgmatic' && chmod 0700 '/home/$SERVER_USER/docker/borgmatic' && stat -c '%U %G %a %n' '/home/$SERVER_USER/docker/borgmatic'"
+```
+
+If you must create a directory outside `/home`, run this on the server as an administrator:
+
+```bash
+# on the server (as root)
+sudo mkdir -p /opt/some/dir
+sudo chown root:root /opt/some/dir
+sudo chmod 0700 /opt/some/dir
+```
+
+3. **Enable password‑less `rsync`**  
 	To let `rsync` operate without prompting for an SSH passphrase or a sudo password, set up an SSH agent and configure password‑less sudo on the target host.
 
 	### SSH agent on your workstation
