@@ -100,7 +100,11 @@ for local_file in "${!MAP[@]}"; do
     else
         echo "Running rsync for $local_file -> $remote_file"
     fi
-    rsync -avz $dry_flag \
+    # Prevent rsync from overwriting permissions we set on the remote directory.
+    # rsync -a preserves permissions from the source; when we create a 0700
+    # directory beforehand, rsync can change it back to the source's 0755.
+    # Use --no-perms so rsync won't modify permission bits on the receiver.
+    rsync -avz --no-perms $dry_flag \
         -e "ssh -A -i $SSH_KEY -p $SERVER_PORT" \
         --rsync-path="sudo rsync" \
         "$local_file" \
