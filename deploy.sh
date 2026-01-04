@@ -100,7 +100,7 @@ for local_file in "${!MAP[@]}"; do
     else
         echo "Running rsync for $local_file -> $remote_file"
     fi
-    rsync -avz \
+    rsync -avz $dry_flag \
         -e "ssh -A -i $SSH_KEY -p $SERVER_PORT" \
         --rsync-path="sudo rsync" \
         "$local_file" \
