@@ -10,6 +10,20 @@ A collection of Docker‑compose files, service definitions, and other configura
 	```
 	The script reads variables from `deploy.conf`. Create this file (or copy `deploy.conf.template`) and fill in the values that match your server setup.
 
+	Options:
+
+	- `-n, --dry-run` — show the remote commands that would be run for directory preparation and run `rsync` in `--dry-run` mode (no files transferred).
+
+	Examples:
+
+	```bash
+	# Show actions and run rsync in dry-run mode
+	./deploy.sh --dry-run
+
+	# Regular deployment
+	./deploy.sh
+	```
+
 2. **Automatic directory handling & safety**
 
  - `deploy.sh` will automatically create remote directories when the target is under `/home/<user>/...`. Those directories are created as the remote user (no `sudo`), ownership is set to the deploy user when possible, and permissions are set to `0700`.
