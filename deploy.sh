@@ -1,6 +1,30 @@
 #!/bin/bash
 set -euo pipefail
 
+# Parse simple CLI options (supports --dry-run / -n)
+DRY_RUN=false
+while [[ "$#" -gt 0 ]]; do
+    case "$1" in
+        -n|--dry-run)
+            DRY_RUN=true
+            shift
+            ;;
+        -h|--help)
+            cat <<EOF
+Usage: $0 [--dry-run]
+
+Options:
+  -n, --dry-run   Show actions that would be taken and run rsync in --dry-run mode
+  -h, --help      Show this help message
+EOF
+            exit 0
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
 # Load configuration from external file
 CONFIG_FILE="./deploy.conf"
 if [[ ! -f "$CONFIG_FILE" ]]; then
@@ -49,18 +73,33 @@ for local_file in "${!MAP[@]}"; do
     if [[ "$remote_dir" == /home/* ]]; then
         echo "Preparing directory under /home on remote host (no sudo): $remote_dir"
 
-        # Attempt to create directory and set permissions as the remote user (no sudo).
-        # Try chown but ignore failure (non-root users cannot change ownership).
-        ssh -A -i "$SSH_KEY" -p "$SERVER_PORT" "$SERVER_USER@$SERVER_HOST" \
-            "mkdir -p '$remote_dir' && chown $SERVER_USER:$SERVER_USER '$remote_dir' 2>/dev/null || true && chmod 0700 '$remote_dir'" || {
-            echo "Error: failed to create/prepare remote directory '$remote_dir' as non-root on $SERVER_HOST" >&2
-            exit 1
-        }
+        remote_prep_cmd="mkdir -p '$remote_dir' && chown $SERVER_USER:$SERVER_USER '$remote_dir' 2>/dev/null || true && chmod 0700 '$remote_dir'"
+
+        if [[ "$DRY_RUN" == true ]]; then
+            echo "[DRY-RUN] remote command: $remote_prep_cmd"
+        else
+            ssh -A -i "$SSH_KEY" -p "$SERVER_PORT" "$SERVER_USER@$SERVER_HOST" \
+                "$remote_prep_cmd" || {
+                echo "Error: failed to create/prepare remote directory '$remote_dir' as non-root on $SERVER_HOST" >&2
+                exit 1
+            }
+        fi
     else
         echo "Error: remote directory '$remote_dir' is outside /home — please create it manually on the server (with sudo) and then re-run deploy.sh." >&2
         exit 1
     fi
 
+    # Build dry-run flag for rsync
+    dry_flag=""
+    if [[ "$DRY_RUN" == true ]]; then
+        dry_flag="--dry-run"
+    fi
+
+    if [[ "$DRY_RUN" == true ]]; then
+        echo "Running rsync (dry-run) for $local_file -> $remote_file"
+    else
+        echo "Running rsync for $local_file -> $remote_file"
+    fi
     rsync -avz \
         -e "ssh -A -i $SSH_KEY -p $SERVER_PORT" \
         --rsync-path="sudo rsync" \
