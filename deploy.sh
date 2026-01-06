@@ -35,14 +35,14 @@ source "$CONFIG_FILE"
 
 # Mapping: local file path → remote file path on server
 declare -A MAP=(
-    ["borgmatic/"]="/home/$SERVER_USER/docker/borgmatic/"
-#   ["caddy/"]="/home/$SERVER_USER/docker/caddy/"
-#   ["homer/"]="/home/$SERVER_USER/docker/homer/"
-#   ["nextcloud-aio/"]="/home/$SERVER_USER/docker/nextcloud-aio/"
-#   ["borgmatic-package/config.yaml"]="/etc/borgmatic/config.yaml"
-#   ["borgmatic-package/borgmatic.service"]="/etc/systemd/system/borgmatic.service"
-#	["borgmatic-package/borgmatic.timer"]="/etc/systemd/system/borgmatic.timer"
-#	["borgmatic/credentials.txt"]="/etc/borgmatic/credentials.txt"
+#    ["borgmatic/"]="/home/$SERVER_USER/docker/borgmatic/"
+#    ["caddy/"]="/home/$SERVER_USER/docker/caddy/"
+#    ["homer/"]="/home/$SERVER_USER/docker/homer/"
+#    ["nextcloud-aio/"]="/home/$SERVER_USER/docker/nextcloud-aio/"
+     ["borgmatic-package/config.yaml"]="/etc/borgmatic/config.yaml"
+     ["borgmatic-package/borgmatic.service"]="/etc/systemd/system/borgmatic.service"
+     ["borgmatic-package/borgmatic.timer"]="/etc/systemd/system/borgmatic.timer"
+#    ["borgmatic/credentials.txt"]="/etc/borgmatic/credentials.txt"
     # Add more as needed
 )
 
