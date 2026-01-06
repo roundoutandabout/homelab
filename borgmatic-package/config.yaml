@@ -1,8 +1,8 @@
 btrfs:  
 
 source_directories:  
-    - /         # root subvolume
-    - /home     # home subvolume
+    - /         # root subvolume
+    - /home     # home subvolume
 patterns:
     - '- /home/*/.cache'
     - '- /var/log'
