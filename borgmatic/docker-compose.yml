@@ -1,0 +1,25 @@
+services:
+  borgmatic:
+    image: modem7/borgmatic-docker
+    container_name: borgmatic
+    volumes:
+      - ${VOLUME_SOURCE_1}:/mnt/source/root        # first backup source
+      - ${VOLUME_SOURCE_2}:/mnt/source/home        # second backup source (has to be /mnt/source/<whatever)
+      - ${VOLUME_TARGET}:/mnt/borg-repository      # backup target
+      - ${VOLUME_ETC_BORGMATIC}:/etc/borgmatic.d/  # borgmatic config file(s) + crontab.txt
+      - ${VOLUME_BORG_CONFIG}:/root/.config/borg   # config and keyfiles
+      - ${VOLUME_SSH}:/root/.ssh                   # ssh key for remote repositories
+      - ${VOLUME_BORG_CACHE}:/root/.cache/borg     # checksums used for deduplication
+    cap_add:
+      - SYS_ADMIN
+      - FOWNER
+    environment:
+      - TZ=${TZ}
+      - BORG_PASSPHRASE=${BORG_PASSPHRASE}
+      - CRON=${CRON}
+      - CRON_COMMAND=${CRON_COMMAND}
+    restart: unless-stopped
+
+networks:
+  caddy_caddynet:
+    external: true
