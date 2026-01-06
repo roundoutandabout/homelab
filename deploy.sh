@@ -85,8 +85,12 @@ for local_file in "${!MAP[@]}"; do
             }
         fi
     else
-        echo "Error: remote directory '$remote_dir' is outside /home — please create it manually on the server (with sudo) and then re-run deploy.sh." >&2
-        exit 1
+		if ssh -A -i "$SSH_KEY" -p "$SERVER_PORT" "$SERVER_USER@$SERVER_HOST" "test -d '$remote_dir'"; then
+			echo "Remote directory '$remote_dir' exists — continuing."
+		else
+			echo "Error: remote directory '$remote_dir' is outside /home and does not exist. Please create it manually on the server (with sudo) and then re-run deploy.sh." >&2
+			exit 1
+		fi
     fi
 
     # Build dry-run flag for rsync
