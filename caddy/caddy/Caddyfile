@@ -6,7 +6,7 @@
 			api_key {$PORKBUN_API_KEY}
 			api_secret_key {$PORKBUN_API_SECRET_KEY}
 		}
-		resolvers {$DNS_RESOLVER}
+		# resolvers {$DNS_RESOLVER} # Custom DNS provider if behind a VPN
 	}
 }
 
@@ -18,6 +18,6 @@ nextcloud.{$MY_DOMAIN} {
 			api_key {$PORKBUN_API_KEY}
 			api_secret_key {$PORKBUN_API_SECRET_KEY}
 		}
-		resolvers {$DNS_RESOLVER}
+		# resolvers {$DNS_RESOLVER} # Custom DNS provider if behind a VPN
 	}
 }
