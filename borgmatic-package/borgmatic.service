@@ -6,6 +6,8 @@ After=network-online.target
 # want to allow borgmatic to run anytime.
 ConditionACPower=true
 Documentation=https://torsion.org/borgmatic/
+ConditionFileNotEmpty=|/etc/borgmatic/config.yaml
+ConditionPathExistsGlob=|/etc/borgmatic.d/*.yaml
 
 [Service]
 Type=oneshot
