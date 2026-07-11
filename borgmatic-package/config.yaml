@@ -10,7 +10,7 @@ patterns:
     - '- /tmp'
 
 repositories:  
-    - path: /mnt/backup/{hostname}-backup
+    - path: /mnt/backup/{hostname}
 
 encryption_passphrase: "{credential file /etc/borgmatic/credentials.txt}" 
 
