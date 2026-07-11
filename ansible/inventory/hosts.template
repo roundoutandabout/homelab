@@ -1,0 +1,3 @@
+[homelab]
+# Replace the values for SSH connection to your server settings.
+homelab ansible_host=192.168.0.10 ansible_port=22 ansible_user=user ansible_ssh_private_key_file=~/.ssh/id_rsa

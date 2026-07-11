@@ -1,0 +1,8 @@
+# Group variables template — copy to `ansible/group_vars/all.yml` and fill values.
+# Keep the real file out of the repository (add to .gitignore) or encrypt with Ansible Vault.
+deploy_user: <your_deploy_user>
+
+# Example using Ansible Vault (optional):
+# vault_deploy_user: !!vault |
+#   $ANSIBLE_VAULT;1.1;AES256
+#   <encrypted content here>

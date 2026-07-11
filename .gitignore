@@ -5,3 +5,4 @@ caddy/data/caddy/
 caddy/config/caddy/
 deploy.conf
 ansible/inventory/hosts
+ansible/group_vars/*.yml

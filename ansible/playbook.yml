@@ -1,0 +1,127 @@
+- name: Deploy Homelab server configuration
+  hosts: homelab
+  gather_facts: false
+  become: true
+  vars:
+    # Set `deploy_user` in `ansible/group_vars/all.yml` or pass via
+    # `-e "deploy_user=<user>"` at runtime. Do NOT hardcode the real user here.
+    deploy_home: "/home/{{ deploy_user }}"
+
+  tasks:
+
+    - name: Ensure rsync is installed on remote
+      apt:
+        name: rsync
+        state: present
+      become: true
+
+    - name: Ensure caddy docker config directory exists
+      file:
+        path: "{{ deploy_home }}/homelab/caddy"
+        state: directory
+        owner: "{{ deploy_user }}"
+        group: "{{ deploy_user }}"
+        mode: '0755' # drwxr-xr-x
+      become: false
+
+    - name: Synchronize caddy docker configuration
+      synchronize:
+        src: ../caddy/
+        dest: "{{ deploy_home }}/homelab/caddy/"
+        archive: yes
+        recursive: yes
+      delegate_to: localhost
+      become: false
+
+    - name: Start Caddy container
+      become: true
+      command: docker compose up -d
+      args:
+        chdir: "{{ deploy_home }}/homelab/caddy"
+
+    - name: Ensure homer docker config directory exists
+      file:
+        path: "{{ deploy_home }}/homelab/homer"
+        state: directory
+        owner: "{{ deploy_user }}"
+        group: "{{ deploy_user }}"
+        mode: '0755' # drwxr-xr-x
+      become: false
+
+    - name: Synchronize homer docker configuration
+      synchronize:
+        src: ../homer/
+        dest: "{{ deploy_home }}/homelab/homer/"
+        archive: yes
+        recursive: yes
+      become: false
+      delegate_to: localhost
+
+    - name: Ensure nextcloud-aio docker config directory exists
+      file:
+        path: "{{ deploy_home }}/homelab/nextcloud-aio"
+        state: directory
+        owner: "{{ deploy_user }}"
+        group: "{{ deploy_user }}"
+        mode: '0755' # drwxr-xr-x
+      become: false
+
+    - name: Synchronize nextcloud-aio docker configuration
+      synchronize:
+        src: ../nextcloud-aio/
+        dest: "{{ deploy_home }}/homelab/nextcloud-aio/"
+        archive: yes
+        recursive: yes
+      become: false
+      delegate_to: localhost
+
+    - name: Ensure borgmatic config directory exists
+      file:
+        path: "/etc/borgmatic"
+        state: directory
+        owner: "root"
+        group: "root"
+        mode: '0700' # drwx------
+      become: true
+
+    - name: Copy borgmatic configuration
+      copy:
+        src: ../borgmatic-package/config.yaml
+        dest: /etc/borgmatic/config.yaml
+        owner: root
+        group: root
+        mode: '0600' # -rw-------
+
+    - name: Copy borgmatic credential file
+      copy:
+        src: ../borgmatic-package/credentials.txt.template
+        dest: /etc/borgmatic/credentials.txt.template
+        owner: root
+        group: root
+        mode: '0600' # -rw-------
+
+    - name: Copy borgmatic service unit
+      copy:
+        src: ../borgmatic-package/borgmatic.service
+        dest: /etc/systemd/system/borgmatic.service
+        owner: root
+        group: root
+        mode: '0644' # -rw-r--r--
+
+    - name: Copy borgmatic timer unit
+      copy:
+        src: ../borgmatic-package/borgmatic.timer
+        dest: /etc/systemd/system/borgmatic.timer
+        owner: root
+        group: root
+        mode: '0644' # -rw-r--r--
+
+    - name: Reload systemd daemon
+      systemd:
+        daemon_reload: true
+
+    - name: Ensure borgmatic timer is enabled and started
+      systemd:
+        name: borgmatic.timer
+        enabled: yes
+        state: started
