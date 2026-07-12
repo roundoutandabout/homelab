@@ -1,0 +1,16 @@
+services:
+  homarr:
+    container_name: homarr
+    image: ghcr.io/homarr-labs/homarr:latest
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
+      - ./appdata:/appdata
+    env_file:
+      - container-vars.env
+    networks:
+      - caddy_caddynet
+
+networks:
+  caddy_caddynet:
+    external: true
