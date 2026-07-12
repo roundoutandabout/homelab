@@ -1,5 +1,5 @@
-{$MY_DOMAIN} {
-	reverse_proxy homer:8080
+homarr.{$MY_DOMAIN} {
+	reverse_proxy homarr:7575
 
 	tls {
 		dns porkbun {
