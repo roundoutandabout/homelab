@@ -33,25 +33,25 @@
       delegate_to: localhost
       become: false
 
-    - name: Start Caddy container
-      become: true
-      command: docker compose up -d
-      args:
-        chdir: "{{ deploy_home }}/homelab/caddy"
+    # - name: Start Caddy container
+    #   become: true
+    #   command: docker compose up -d
+    #   args:
+    #     chdir: "{{ deploy_home }}/homelab/caddy"
 
-    - name: Ensure homer docker config directory exists
+    - name: Ensure homarr docker config directory exists
       file:
-        path: "{{ deploy_home }}/homelab/homer"
+        path: "{{ deploy_home }}/homelab/homarr"
         state: directory
         owner: "{{ deploy_user }}"
         group: "{{ deploy_user }}"
         mode: '0755' # drwxr-xr-x
       become: false
 
-    - name: Synchronize homer docker configuration
+    - name: Synchronize homarr docker configuration
       synchronize:
-        src: ../homer/
-        dest: "{{ deploy_home }}/homelab/homer/"
+        src: ../homarr/
+        dest: "{{ deploy_home }}/homelab/homarr/"
         archive: yes
         recursive: yes
       become: false
@@ -116,9 +116,9 @@
         group: root
         mode: '0644' # -rw-r--r--
 
-    - name: Reload systemd daemon
-      systemd:
-        daemon_reload: true
+    # - name: Reload systemd daemon
+    #   systemd:
+    #     daemon_reload: true
 
     - name: Ensure borgmatic timer is enabled and started
       systemd:
